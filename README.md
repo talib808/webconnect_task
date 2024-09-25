@@ -82,7 +82,8 @@ POST /api/users/:id/follow: Follow a user (requires authentication).
 POST /api/users/:id/unfollow: Unfollow a user (requires authentication).
 
 Usage
-Login and Sign up with username , email, password.
+Login with email , password.
+aSign up with username , email, password.
 Log in using your credentials 
 Create posts using the post creation form.
 Like posts by clicking the like button.
