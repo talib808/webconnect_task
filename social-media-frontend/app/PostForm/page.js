@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Navbar from '../components/Navbar'; 
 import PostForm from '../components/PostForm'; 
 
@@ -10,7 +10,7 @@ const Page = () => {
   const [error, setError] = useState(null);
 
   // Fetch posts from the API
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -26,13 +26,14 @@ const Page = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []); 
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [fetchPosts]); 
 
-  const handleLike = async (postId) => {
+  // Like a post
+  const handleLike = useCallback(async (postId) => {
     const token = localStorage.getItem('token');
     if (!token) {
       alert('You need to be logged in to like posts.');
@@ -61,8 +62,9 @@ const Page = () => {
     } catch (error) {
       console.error('Error liking post:', error);
     }
-  };
+  }, []);
 
+  // Handle new post creation
   const handlePostCreated = (data) => {
     setPosts((prevPosts) => [...prevPosts, data]);
     console.log('Post created:', data);
@@ -72,9 +74,11 @@ const Page = () => {
     <>
       <Navbar />
       <PostForm onPostCreated={handlePostCreated} />
-      {loading && <p>Loading...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      {posts.length === 0 ? (
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : posts.length === 0 ? (
         <p>No posts available.</p>
       ) : (
         <div className="mt-4">
